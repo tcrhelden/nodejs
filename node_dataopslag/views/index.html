@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Mijn Webapp - Gebruikers</title>
+</head>
+<body>
+  <h1>Gebruiker toevoegen</h1>
+
+  <form id="userForm">
+    <input type="text" id="name" placeholder="Naam" required>
+    <button type="submit">Opslaan</button>
+  </form>
+
+  <h2>Gebruikerslijst</h2>
+  <ul id="userList"></ul>
+
+  <script>
+    const form = document.getElementById("userForm");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const name = document.getElementById("name").value;
+
+      await fetch("/api/users", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name })
+      });
+
+      loadUsers();
+    });
+
+    async function loadUsers() {
+      const users = await fetch("/api/users").then(res => res.json());
+      document.getElementById("userList").innerHTML =
+        users.map(u => `<li>${u.name}</li>`).join("");
+    }
+
+    loadUsers();
+  </script>
+</body>
+</html>
